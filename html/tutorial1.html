@@ -1,0 +1,83 @@
+<html>
+    <body>
+        <h1 id="header">Header</h1>
+        <input type="text" id="inp"/>
+        <button onclick="button()">OK</button>
+        <button onclick="red()">Red</button>
+        <button onclick="green()">Green</button>
+        <script>
+            function add(a, b) {
+                return a + b;
+            }
+            function red() {
+                document.getElementById("header").innerHTML = "The button \"red\" was clicked";
+            }
+            function green() {
+                document.getElementById("header").style.color = "green";
+            }
+            console.log("Hello World");//this is console, nobody sees this
+            document.write("<h1>Hello!</h1>");
+            //console.warn("Warning!!"); //this will pop up in the console
+            //console.error("ERROR"); //this will also pop up in the console
+            document.write(document.getElementById("header").innerHTML);
+            document.getElementById("header").innerHTML = "This is the new header";
+
+            //var inp = document.getElementById("inp").value;
+
+            function button() {
+                //gotta check the value of the input box every time it's called
+                var inp = document.getElementById("inp").value;
+                document.getElementById("header").style.color = inp;
+
+            }
+
+            switch (inp) {
+                case "red":
+                    console.log("red");
+                    break;
+                case "blue":
+                    console.log("blue");
+                    break;
+                default:
+                    console.log("default");
+                    break;
+            }
+
+
+
+            //string in "" or ''
+            //number 23 2.00 no int or float
+            //bool true false, lowercase
+            //undefined
+            //null. type null
+
+
+            //comments
+            /*
+            normal 
+            multiline 
+            comments
+            */
+
+            var x = 6;
+            console.log(x);
+
+            x = 9;
+            console.log(x);
+
+            var name = "myname";
+            var test = name*2 //value set to NaN
+
+            //&& and operator
+            //|| or operator
+            //! reverses pretty much
+
+
+            console.log(test);
+
+
+            
+
+        </script>
+    </body>
+</html>
