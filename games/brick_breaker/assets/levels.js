@@ -2,8 +2,7 @@ import Brick from "./brick.js"
 
 export function build_level(game, level) {
     let bricks = [];
-
-    if (game.gamestate = 5) return;
+    if (game.gamestate == 5) return;
     level.forEach((row, row_num) => {
         row.forEach((brick, brick_num) => {
             if (brick == 1) {
