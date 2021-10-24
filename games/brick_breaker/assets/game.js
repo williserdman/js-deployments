@@ -3,7 +3,7 @@ import Paddle from './paddle.js';
 import InputHandler from "./input.js";
 import Ball from "./ball.js";
 import Brick from './brick.js';
-import { build_level, level1, level2 } from './levels.js';
+import {build_level, level1, level2} from './levels.js';
 
 const GAMESTATE = {
     PAUSED: 0,
@@ -37,7 +37,6 @@ export default class Game {
         this.gamestate = GAMESTATE.RUNNING;
 
         this.bricks = build_level(this, this.levels[this.current_level]);
-
         this.gobjects = [this.ball, this.paddle];//... is spread operator
     }
 
