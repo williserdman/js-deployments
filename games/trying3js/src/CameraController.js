@@ -3,8 +3,9 @@ export default class CameraController {
         this.camera = camera;
         this.xBuffer;
         this.yBuffer;
+        this.MOVEMENT_SCALE = 5;
     }
-    updateFPP(mousePosition) { //updates first person perspective
+    updateRotation(mousePosition) { //updates first person perspective
         let camBuffer;
 
         camBuffer = this.camera.rotation.y;
@@ -21,4 +22,5 @@ export default class CameraController {
         if (this.camera.rotation.x >= Math.PI / 2) this.camera.rotation.x = Math.PI / 2;
         if (this.camera.rotation.x <= -Math.PI / 2) this.camera.rotation.x = -Math.PI / 2;
     }
+    updatePosition(actionObject) {}
 }

@@ -44,7 +44,7 @@ wall.position.set(0, 5, 50);
 wall2.position.set(0, 5, -50)
 
 scene.add(wall2);
-//scene.add(wall);
+scene.add(wall);
 scene.add(roof);
 scene.add(floor);
 scene.add(box);
@@ -57,11 +57,17 @@ const cameraController = new CameraController(camera);
 
 camera.rotation.set(0, 0, 0, "YXZ")
 function animate() {
+    cameraController.updateRotation(eventHandler.mousePosition);
 
-    cameraController.updateFPP(eventHandler.mousePosition);
+
+    //going to bed, but the issue is that when I'm facing a new direction, I wan't "w" to take me visibly forward
+
+
+
+
+
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
-
 }
 
 animate();
