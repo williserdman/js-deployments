@@ -1,6 +1,10 @@
 export default class EventHandler {
 
     constructor() {
+        window.addEventListener("resize", () => {
+            console.log(window.innerHeight + "x" + window.innerWidth);
+            this.doResize = true;
+        }, false);
         this.mousePosition = {};
         document.addEventListener("mousemove", (e) => {
             this.mousePosition.changeX = e.movementX;

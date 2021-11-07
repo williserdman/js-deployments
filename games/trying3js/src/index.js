@@ -57,13 +57,12 @@ const cameraController = new CameraController(camera);
 
 camera.rotation.set(0, 0, 0, "YXZ")
 function animate() {
-    cameraController.updateRotation(eventHandler.mousePosition);
-    cameraController.updatePosition(eventHandler.action);
-
-    //going to bed, but the issue is that when I'm facing a new direction, I wan't "w" to take me visibly forward
-
-
-
+    cameraController.update(
+        eventHandler.mousePosition,
+        eventHandler.action,
+        eventHandler.doResize,
+        renderer
+    )
 
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
