@@ -3,7 +3,7 @@ export default class CameraController {
         this.camera = camera;
         this.xBuffer;
         this.yBuffer;
-        this.MOVEMENT_SCALE = 5;
+        this.SPEED = 2;
     }
     updateRotation(mousePosition) { //updates first person perspective
         let camBuffer;
@@ -22,5 +22,22 @@ export default class CameraController {
         if (this.camera.rotation.x >= Math.PI / 2) this.camera.rotation.x = Math.PI / 2;
         if (this.camera.rotation.x <= -Math.PI / 2) this.camera.rotation.x = -Math.PI / 2;
     }
-    updatePosition(actionObject) {}
+    updatePosition(actionObject) {
+        if (actionObject.forward) {
+            this.camera.position.z -= Math.cos(this.camera.rotation.y) * this.SPEED;
+            this.camera.position.x -= Math.sin(this.camera.rotation.y) * this.SPEED;
+        }
+        if (actionObject.back) {
+            this.camera.position.x += Math.sin(this.camera.rotation.y) * this.SPEED;
+            this.camera.position.z += Math.cos(this.camera.rotation.y) * this.SPEED;
+        }
+        if (actionObject.left) {
+            this.camera.position.x -= Math.cos(this.camera.rotation.y) * this.SPEED;
+            this.camera.position.z += Math.sin(this.camera.rotation.y) * this.SPEED;
+        }
+        if (actionObject.right) {
+            this.camera.position.x += Math.cos(this.camera.rotation.y) * this.SPEED;
+            this.camera.position.z -= Math.sin(this.camera.rotation.y) * this.SPEED;
+        }
+    }
 }
