@@ -9,7 +9,7 @@ const FAR_BOUND = 1000;
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
     FOV, //field of view
-    window.innerWidth/window.innerHeight, //aspect ratio
+    window.innerWidth / window.innerHeight, //aspect ratio
     NEAR_BOUND, //close clipping bound
     FAR_BOUND //far clipping bound
 )
@@ -18,29 +18,51 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-const geometry = new THREE.BoxGeometry(2, 2, 2);
-const material = new THREE.MeshBasicMaterial({color: 0x00ff00});
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+let canvas = renderer.domElement;
 
-camera.position.z = 5
+canvas.onclick = () => {
+    canvas.requestPointerLock();
+    canvas.requestFullscreen();
+}
 
-let buffer;
+const geometry = new THREE.BoxGeometry(100, 2, 100);
+const green = new THREE.MeshBasicMaterial({color: 0x00ff00});
+const red = new THREE.MeshBasicMaterial({color: 0xff0000});
+const floor = new THREE.Mesh(geometry, green);
+const roof = new THREE.Mesh(geometry, red);
+roof.translateY(10);
+scene.add(roof);
+scene.add(floor);
+
+camera.position.z = 5;
+camera.position.x = 5;
+camera.position.y = 5;
+
+let camBuffer, xBuffer, yBuffer;
 const events = new EventHandler();
+let clock = new THREE.Clock();
+let timeDelta;
+
 function animate() {
+
+    camBuffer = camera.rotation.y;
+    camera.rotation.y -= (events.mousePosition.changeX / window.innerWidth) * 2*Math.PI;
+    if (isNaN(camera.rotation.y)) camera.rotation.y = camBuffer;
+    if (events.mousePosition.changeX === xBuffer) events.mousePosition.changeX = 0;
+    xBuffer = events.mousePosition.changeX;
+
+    camBuffer = camera.rotation.x;
+    camera.rotation.x -= (events.mousePosition.changeY / window.innerHeight) * 2*Math.PI;
+    if (isNaN(camera.rotation.x)) camera.rotation.x = camBuffer;
+    if (events.mousePosition.changeY === yBuffer) events.mousePosition.changeY = 0;
+    yBuffer = events.mousePosition.changeY;
+    if (camera.rotation.x >= Math.PI / 2) camera.rotation.x = Math.PI / 2;
+    if (camera.rotation.x <= -Math.PI / 2) camera.rotation.x = -Math.PI / 2;
+
+    //console.log(camera.rotation);
+
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
-
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-
-    buffer = camera.rotation.y;
-    camera.rotation.y += (events.mousePosition.changeX / window.innerWidth) * 2*Math.PI;
-    if (isNaN(camera.rotation.y)) camera.rotation.y = buffer;
-
-    buffer = camera.rotation.x;
-    camera.rotation.x += (events.mousePosition.changeY / window.innerHeight) * 2*Math.PI;
-    if (isNaN(camera.rotation.x)) camera.rotation.x = buffer;
 
 }
 
