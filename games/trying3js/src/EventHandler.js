@@ -5,7 +5,6 @@ export default class EventHandler {
         document.addEventListener("mousemove", (e) => {
             this.mousePosition.changeX = e.movementX;
             this.mousePosition.changeY = e.movementY;
-            console.log(this.mousePosition)
         }, false);
 
         this.movements = {}

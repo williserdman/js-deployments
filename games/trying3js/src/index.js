@@ -2,6 +2,7 @@
 import * as THREE from "https://cdn.skypack.dev/three@0.134.0";
 import EventHandler from "./EventHandler.js";
 import GameEngine from "./GameEngine.js";
+import CameraController from "./CameraController.js";
 
 const FOV = 75;
 const NEAR_BOUND = 0.1;
@@ -48,32 +49,16 @@ scene.add(roof);
 scene.add(floor);
 scene.add(box);
 
-//camera.position.x = 5;
 camera.position.y = 5;
 
-let camBuffer, xBuffer, yBuffer;
-const events = new EventHandler();
-let clock = new THREE.Clock();
-let timeDelta;
-const game = new GameEngine();
+const eventHandler = new EventHandler();
+//const game = new GameEngine();
+const cameraController = new CameraController(camera);
 
 camera.rotation.set(0, 0, 0, "YXZ")
 function animate() {
 
-    camBuffer = camera.rotation.y;
-    camera.rotation.y -= (events.mousePosition.changeX / window.innerWidth) * 2*Math.PI;
-    if (isNaN(camera.rotation.y)) camera.rotation.y = camBuffer;
-    if (events.mousePosition.changeX === xBuffer) events.mousePosition.changeX = 0;
-    xBuffer = events.mousePosition.changeX;
-
-    camBuffer = camera.rotation.x;
-    camera.rotation.x -= (events.mousePosition.changeY / window.innerHeight) * 2*Math.PI;
-    if (isNaN(camera.rotation.x)) camera.rotation.x = camBuffer;
-    if (events.mousePosition.changeY === yBuffer) events.mousePosition.changeY = 0;
-    yBuffer = events.mousePosition.changeY;
-    if (camera.rotation.x >= Math.PI / 2) camera.rotation.x = Math.PI / 2;
-    if (camera.rotation.x <= -Math.PI / 2) camera.rotation.x = -Math.PI / 2;
-
+    cameraController.updateFPP(eventHandler.mousePosition);
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
 
