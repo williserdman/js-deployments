@@ -2,7 +2,6 @@ export default class EventHandler {
 
     constructor() {
         window.addEventListener("resize", () => {
-            console.log(window.innerHeight + "x" + window.innerWidth);
             this.doResize = true;
         }, false);
         this.mousePosition = {};
@@ -36,6 +35,18 @@ export default class EventHandler {
                 case "q":
                     this.action.special2 = true;
                     break;
+                case " ":
+                    this.action.spaceBar = true;
+                    break;
+                case "Control":
+                    this.action.control = true;
+                    break;
+                case "Shift":
+                    this.action.shift = true;
+                    break;
+                case "Escape":
+                    this.action.escape = true;
+                    break;
             } //switch
         }) //event listener key down
         document.addEventListener("keyup", (e) => {
@@ -61,6 +72,15 @@ export default class EventHandler {
                     break;
                 case "q":
                     this.action.special2 = false;
+                    break;
+                case " ":
+                    this.action.spaceBar = false;
+                    break;
+                case "Control":
+                    this.action.control = false;
+                    break;
+                case "Shift":
+                    this.action.shift = false;
                     break;
             }//switch
         })//event listener key up

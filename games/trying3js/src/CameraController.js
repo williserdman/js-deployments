@@ -3,7 +3,11 @@ export default class CameraController {
         this.camera = camera;
         this.xBuffer;
         this.yBuffer;
-        this.SPEED = 2;
+
+        this.speed;
+        this.WALK = 1.5;
+        this.SPRINT = 3;
+
     }
     update(mousePosition, actionObject, resize, renderer) {
         this.updateRotation(mousePosition);
@@ -43,8 +47,14 @@ export default class CameraController {
 
     }
     updatePosition(actionObject) {
-        let bufferCos = Math.cos(this.camera.rotation.y) * this.SPEED;
-        let bufferSin = Math.sin(this.camera.rotation.y) * this.SPEED;
+        //determining if we should be sprinting right now
+        this.speed = (actionObject.shift) ? this.SPRINT : this.WALK;
+    
+        //math so it only has to be done once per frame
+        let bufferCos = Math.cos(this.camera.rotation.y) * this.speed;
+        let bufferSin = Math.sin(this.camera.rotation.y) * this.speed;
+
+        //horizontal movement (x and z)
         if (actionObject.forward) {
             this.camera.position.z -= bufferCos;
             this.camera.position.x -= bufferSin;
@@ -61,6 +71,10 @@ export default class CameraController {
             this.camera.position.x += bufferCos;
             this.camera.position.z -= bufferSin;
         }
+
+        //up and down (y).... going to repace with jumping, this just lets me fly
+        if (actionObject.control) this.camera.position.y -= this.speed / 2;
+        if (actionObject.spaceBar) this.camera.position.y += this.speed / 2;
     }
     resize(renderer) {
         this.camera.aspect = window.innerWidth / window.innerHeight;
