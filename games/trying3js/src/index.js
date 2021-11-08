@@ -3,20 +3,23 @@ import * as THREE from "https://cdn.skypack.dev/three@0.134.0";
 import EventHandler from "./EventHandler.js";
 import GameEngine from "./GameEngine.js";
 import CameraController from "./CameraController.js";
+import {GLTFLoader} from "./external/GLTFLoader.js";
+
 
 const FOV = 75;
 const NEAR_BOUND = 0.1;
 const FAR_BOUND = 1000;
 
 const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xdddddd)
 const camera = new THREE.PerspectiveCamera(
     FOV, //field of view
     window.innerWidth / window.innerHeight, //aspect ratio
-    NEAR_BOUND, //close clipping bound
+    NEAR_BOUND, //cloclse ipping bound
     FAR_BOUND //far clipping bound
 )
 
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({antialias: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -26,22 +29,55 @@ canvas.onclick = () => {
     canvas.requestFullscreen();
 }
 
+const light = new THREE.PointLight(0xc4c4c4, 10) 
+light.position.set(10, 20, 10);
+scene.add(light);
+const light2 = new THREE.PointLight(0xc4c4c4, 10) 
+light2.position.set(-10, 20, 10);
+scene.add(light2);
+const light3 = new THREE.PointLight(0xc4c4c4, 10) 
+light3.position.set(-10, 20, -10);
+scene.add(light3);
+const light4 = new THREE.PointLight(0xc4c4c4, 10) 
+light4.position.set(10, 20, -10);
+scene.add(light4);
+const light5 = new THREE.PointLight(0xc4c4c4, 10) 
+light4.position.set(0, 30, 0);
+scene.add(light4);
+
 const baseGeometry = new THREE.BoxGeometry(100, 2, 100);
 const wallGeometry = new THREE.BoxGeometry(100, 10, 2)
 const boxGeometry = new THREE.BoxGeometry(2, 2, 2);
+
 const green = new THREE.MeshBasicMaterial({color: 0x00ff00});
 const red = new THREE.MeshBasicMaterial({color: 0xff0000});
 const blue = new THREE.MeshBasicMaterial({color: 0x0000ff});
+const black = new THREE.MeshBasicMaterial({color: 0x000000})
 
 const floor = new THREE.Mesh(baseGeometry, green);
 const roof = new THREE.Mesh(baseGeometry, red);
 const wall = new THREE.Mesh(wallGeometry, blue);
 const wall2 = new THREE.Mesh(wallGeometry, blue);
-const box = new THREE.Mesh(boxGeometry, blue);
+const box = new THREE.Mesh(boxGeometry, black);
 
-roof.position.set(0, 10, 0)
+const loader = new GLTFLoader();
+let beeGLTF;
+renderer.outputEncoding = THREE.sRGBEncoding;
+loader.load(
+    "./3dmodels/bee_best/scene.gltf", (gltf) => { //called when resource is loaded
+        //scene.add(gltf.scene);
+        beeGLTF = gltf;
+    }, (xhr) => { //called while it's being loaded
+        console.log((xhr.loaded/xhr.total * 100) + "% loaded");
+    }, (e) => console.log("Error: " + e) //called when there are errors
+);
+
+//function gtlfHasLoaded
+
+roof.position.set(0, 10, 0);
 wall.position.set(0, 5, 50);
-wall2.position.set(0, 5, -50)
+wall2.position.set(0, 5, -50);
+box.position.y = 5;
 
 scene.add(wall2);
 scene.add(wall);
@@ -63,6 +99,14 @@ function animate() {
         eventHandler.doResize,
         renderer
     )
+
+    if (beeGLTF !== undefined) {
+        scene.add(beeGLTF.scene);
+        beeGLTF.scene.position.y = 20
+    }
+
+    box.position.set(camera.position);
+    box.rotation.set(camera.rotation);
 
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
