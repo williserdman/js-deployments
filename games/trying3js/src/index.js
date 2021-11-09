@@ -11,7 +11,7 @@ const NEAR_BOUND = 0.1;
 const FAR_BOUND = 5000;
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xdddddd)
+scene.background = new THREE.Color(0x202020)
 const camera = new THREE.PerspectiveCamera(
     FOV, //field of view
     window.innerWidth / window.innerHeight, //aspect ratio
@@ -32,38 +32,15 @@ canvas.onclick = () => {
 //---------------------
 //------- Lights ------
 //---------------------
-/* const light = new THREE.PointLight(0xc4c4c4, 10) 
-light.position.set(10, 20, 10);
+const light = new THREE.AmbientLight( 0x101010 ); // soft white light
+//everything gets an equal ammount of light with ambient light, so no shadows
 scene.add(light);
-const light2 = new THREE.PointLight(0xc4c4c4, 10) 
-light2.position.set(-10, 20, 10);
-scene.add(light2);
-const light3 = new THREE.PointLight(0xc4c4c4, 10) 
-light3.position.set(-10, 20, -10);
-scene.add(light3);
-const light4 = new THREE.PointLight(0xc4c4c4, 10) 
-light4.position.set(10, 20, -10);
-scene.add(light4);
-const light5 = new THREE.PointLight(0xc4c4c4, 10) 
-light4.position.set(0, 30, 0);
-scene.add(light4); */
-const light = new THREE.AmbientLight( 0x808080 ); // soft white light
-scene.add( light );
 
-const baseGeometry = new THREE.BoxGeometry(100, 2, 100);
-const wallGeometry = new THREE.BoxGeometry(100, 10, 2)
-const boxGeometry = new THREE.BoxGeometry(2, 2, 2);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(50, 500, 50);
+scene.add(directionalLight)
+directionalLight.castShadow = true;
 
-const green = new THREE.MeshBasicMaterial({color: 0x00ff00});
-const red = new THREE.MeshBasicMaterial({color: 0xff0000});
-const blue = new THREE.MeshBasicMaterial({color: 0x0000ff});
-const black = new THREE.MeshBasicMaterial({color: 0x000000})
-
-const floor = new THREE.Mesh(baseGeometry, green);
-const roof = new THREE.Mesh(baseGeometry, red);
-const wall = new THREE.Mesh(wallGeometry, blue);
-const wall2 = new THREE.Mesh(wallGeometry, blue);
-const box = new THREE.Mesh(boxGeometry, black);
 
 //----------------------------
 //------- 3D Models ----------
@@ -91,7 +68,22 @@ loader.load(
     }, (e) => console.log("Error: " + e) //called when there are errors
 );
 
-//function gtlfHasLoaded
+// ---------------------------------
+
+/* const baseGeometry = new THREE.BoxGeometry(100, 2, 100);
+const wallGeometry = new THREE.BoxGeometry(100, 10, 2)
+const boxGeometry = new THREE.BoxGeometry(2, 2, 2);
+
+const green = new THREE.MeshBasicMaterial({color: 0x00ff00});
+const red = new THREE.MeshBasicMaterial({color: 0xff0000});
+const blue = new THREE.MeshBasicMaterial({color: 0x0000ff});
+const black = new THREE.MeshBasicMaterial({color: 0x000000})
+
+const floor = new THREE.Mesh(baseGeometry, green);
+const roof = new THREE.Mesh(baseGeometry, red);
+const wall = new THREE.Mesh(wallGeometry, blue);
+const wall2 = new THREE.Mesh(wallGeometry, blue);
+const box = new THREE.Mesh(boxGeometry, black);
 
 roof.position.set(0, 10, 0);
 wall.position.set(0, 5, 50);
@@ -101,15 +93,21 @@ box.position.y = 5;
 scene.add(wall2);
 scene.add(wall);
 scene.add(roof);
-scene.add(floor);
+scene.add(floor); */
+
+const boxGeometry = new THREE.BoxGeometry(10, 10, 10);
+const white = new THREE.MeshBasicMaterial({color: 0xffffff});
+const box = new THREE.Mesh(boxGeometry, white);
 scene.add(box);
 
-camera.position.y = 5;
+//camera.position.y = 5;
 
 const eventHandler = new EventHandler();
 //const game = new GameEngine();
 const cameraController = new CameraController(camera);
 
+box.position.set(50, 500, 50);
+scene.add(directionalLight.target);
 camera.rotation.set(0, 0, 0, "YXZ")
 function animate() {
     cameraController.update(
@@ -118,21 +116,26 @@ function animate() {
         eventHandler.doResize,
         renderer
     )
+    
+    //could have something orbit around the light to get a day/night cycle
+    directionalLight.target.position.set(camera.position.x, camera.position.y, camera.position.z);
+    scene.add(directionalLight.target);
+    console.log(directionalLight.target.position);
 
     if (beeGLTF !== undefined) {
         scene.add(beeGLTF.scene);
         beeGLTF.scene.position.y = 20;
     }
     if (mapGLTF !== undefined) {
-        mapGLTF.scene.scale.set(0.005, 0.005, 0.005);
+        mapGLTF.scene.scale.set(0.02, 0.02, 0.02);
         scene.add(mapGLTF.scene);
         mapGLTF.scene.position.y = -50;
         mapGLTF.scene.position.x = 50;
         mapGLTF.scene.position.z = 50;
     }
 
-    box.position.set(camera.position);
-    box.rotation.set(camera.rotation);
+    //box.position.set(camera.position);
+    //box.rotation.set(camera.rotation);
 
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
