@@ -1,9 +1,11 @@
 
+
 import * as THREE from "https://cdn.skypack.dev/three@0.134.0";
 import EventHandler from "./EventHandler.js";
 import GameEngine from "./GameEngine.js";
 import CameraController from "./CameraController.js";
 import {GLTFLoader} from "./external/GLTFLoader.js";
+import * as Ammo from "./external/ammo.js";
 
 
 const FOV = 75;
@@ -29,6 +31,18 @@ canvas.onclick = () => {
     canvas.requestFullscreen();
 }
 
+//----------------------
+//-------- Physics -----
+//----------------------
+
+//initialize physics
+/* const physics = new AmmoPhysics(scene);
+physics.debug.enable(true);
+
+//add a ground 
+physics.add.ground({width: 20, height: 20}) */
+
+
 //---------------------
 //------- Lights ------
 //---------------------
@@ -36,9 +50,10 @@ const light = new THREE.AmbientLight( 0x101010 ); // soft white light
 //everything gets an equal ammount of light with ambient light, so no shadows
 scene.add(light);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
 directionalLight.position.set(50, 500, 50);
-scene.add(directionalLight)
+scene.add(directionalLight);
+scene.add(directionalLight.target);
 directionalLight.castShadow = true;
 
 
@@ -50,7 +65,6 @@ let beeGLTF;
 renderer.outputEncoding = THREE.sRGBEncoding;
 loader.load(
     "./3dmodels/bee_best/scene.gltf", (gltf) => { //called when resource is loaded
-        //scene.add(gltf.scene);
         beeGLTF = gltf;
     }, (xhr) => { //called while it's being loaded
         console.log((xhr.loaded/xhr.total * 100) + "% loaded");
@@ -95,20 +109,18 @@ scene.add(wall);
 scene.add(roof);
 scene.add(floor); */
 
-const boxGeometry = new THREE.BoxGeometry(10, 10, 10);
+const boxGeometry = new THREE.BoxGeometry(100, 100, 100);
+const playerGeometry = new THREE.BoxGeometry(4, 8, 4)
 const white = new THREE.MeshBasicMaterial({color: 0xffffff});
 const box = new THREE.Mesh(boxGeometry, white);
+const player = new THREE.Mesh(playerGeometry, white);
 scene.add(box);
-
-//camera.position.y = 5;
+scene.add(player);
 
 const eventHandler = new EventHandler();
-//const game = new GameEngine();
 const cameraController = new CameraController(camera);
 
-box.position.set(50, 500, 50);
-scene.add(directionalLight.target);
-camera.rotation.set(0, 0, 0, "YXZ")
+camera.rotation.set(0, 0, 0, "YXZ");
 function animate() {
     cameraController.update(
         eventHandler.mousePosition,
@@ -119,8 +131,10 @@ function animate() {
     
     //could have something orbit around the light to get a day/night cycle
     directionalLight.target.position.set(camera.position.x, camera.position.y, camera.position.z);
+    directionalLight.position.set(camera.position.x, camera.position.y + 3000, camera.position.z);
+    box.position.set(camera.position.x, camera.position.y + 3000, camera.position.z)
     scene.add(directionalLight.target);
-    console.log(directionalLight.target.position);
+    player.position.set(camera.position.x, camera.position.y + 4, camera.position.z);
 
     if (beeGLTF !== undefined) {
         scene.add(beeGLTF.scene);
