@@ -4,7 +4,9 @@ import * as BABYLON from "babylonjs";
 const canvas = document.getElementById("renderCanvas");
 const engine = new BABYLON.Engine(canvas, true);
 
-const scene = createScene();
+const temp = createScene();
+const scene = temp.scene;
+const sound = temp.sound;
 resizeCanvas();
 
 canvas.onclick = () => {
@@ -36,8 +38,14 @@ function createScene() {
     const light = new BABYLON.HemisphericLight("hemLight", new BABYLON.Vector3(0, 1, 0));
 
     const box = new BABYLON.MeshBuilder.CreateBox("box", {});
+    box.position.y = 0.5;
 
-    return scene;
+    const ground = new BABYLON.MeshBuilder.CreateGround("ground", {width: 10, height: 10});
+
+    const sound = new BABYLON.Sound("sound", "../assets/sounds/Winchester12-RA_The_Sun_God-1722751268.mp3", scene);
+    setInterval(() => sound.play(), 4000);
+
+    return {scene: scene, sound: sound};
 
 }
 
