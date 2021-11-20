@@ -1,6 +1,6 @@
 
 import * as BABYLON from "babylonjs";
-import {SceneLoader} from "babylonjs-loaders";
+import "babylonjs-loaders";
 
 
 const canvas = document.getElementById("renderCanvas");
@@ -57,10 +57,30 @@ function createScene() {
     groundMat.diffuseColor = new BABYLON.Color3(0, 1, 0);
     ground.material = groundMat; */
 
-    SceneLoader.ImportMeshAsync("", "https://assets.babylonjs.com/meshes/", "village.glb", scene);
+    BABYLON.SceneLoader.ImportMeshAsync("", "https://assets.babylonjs.com/meshes/", "village.glb", scene);
 
     const sound = new BABYLON.Sound("sound", "../assets/sounds/Winchester12-RA_The_Sun_God-1722751268.mp3", scene);
     //setInterval(() => sound.play(), 4000);
+
+/**************************************car***************** */
+
+    //base
+    const outline = [
+        new BABYLON.Vector3(-0.3, 0, -0.1),
+        new BABYLON.Vector3(0.2, 0, -0.1),
+    ]
+
+    //curved front
+    for (let i = 0; i < 20; i++) {
+        outline.push(new BABYLON.Vector3(0.2 * Math.cos(i * Math.PI / 40), 0, 0.2 * Math.sin(i * Math.PI / 40) - 0.1));
+    }
+
+    //top
+    outline.push(new BABYLON.Vector3(0, 0, 0.1));
+    outline.push(new BABYLON.Vector3(-0.3, 0, 0.1));
+
+    const car = BABYLON.MeshBuilder.ExtrudePolygon("car", {shape: outline, depth: 0.2});
+/*end car***************************************/
 
     return {scene: scene, sound: sound};
 
