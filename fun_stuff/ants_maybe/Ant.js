@@ -1,7 +1,7 @@
 export default class Ant {
   ANT_WIDTH = 4;
   ANT_HEIGHT = 4;
-  WANDER_AMM = 0.005;
+  WANDER_AMM = 0.0;
   MAX_SPEED = 2;
   SLIME = 1;
 
@@ -75,32 +75,30 @@ export default class Ant {
   #pixelGrab(ctx, sides) {
     let tempX = this.speed.x;
     let tempY = this.speed.y;
-    let xVal = this.position.x + 3 * tempX;
-    let yVal = this.position.y + 3 * tempY;
+    let xVal = this.position.x + 4 * tempX;
+    let yVal = this.position.y + 4 * tempY;
     const topVal =
       (ctx
         .getImageData(xVal, yVal, sides, sides)
         .data.reduce((a, b) => a + b, 0) -
         255) /
       (255 * sides * sides * 4);
-    console.log(1);
 
     tempX = Math.cos(this.direction + Math.PI / 2) * this.MAX_SPEED;
     tempY = Math.sin(this.direction + Math.PI / 2) * this.MAX_SPEED;
-    xVal = this.position.x + 3 * tempX;
-    yVal = this.position.y + 3 * tempY;
+    xVal = this.position.x + 4 * tempX;
+    yVal = this.position.y + 4 * tempY;
     const leftVal =
       (ctx
         .getImageData(xVal, yVal, sides, sides)
         .data.reduce((a, b) => a + b, 0) -
         255) /
       (255 * sides * sides * 4);
-    console.log(leftVal);
 
     tempX = Math.cos(this.direction - Math.PI / 2) * this.MAX_SPEED;
     tempY = Math.sin(this.direction - Math.PI / 2) * this.MAX_SPEED;
-    xVal = this.position.x + 3 * tempX;
-    yVal = this.position.y + 3 * tempY;
+    xVal = this.position.x + 4 * tempX;
+    yVal = this.position.y + 4 * tempY;
     const rightVal =
       (ctx
         .getImageData(xVal, yVal, sides, sides)
@@ -115,7 +113,7 @@ export default class Ant {
 
     const lTilt = (Math.PI / 2) * obj.leftVal;
     const rTilt = -(Math.PI / 2) * obj.rightVal;
-
+    console.log(obj.topVal);
     this.direction += (lTilt + rTilt) * (1 - obj.topVal) * this.SLIME;
   }
 }
