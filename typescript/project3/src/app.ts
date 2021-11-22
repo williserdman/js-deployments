@@ -1,5 +1,5 @@
 
-import { ArcRotateCamera, Color4, Engine, FreeCamera, HemisphericLight, Mesh, MeshBuilder, Scene, Vector3 } from "@babylonjs/core";
+import { ArcRotateCamera, Color4, Engine, FreeCamera, HemisphericLight, Mesh, MeshBuilder, Scene, Vector3 } from "https://cdn.babylonjs.com/babylon.js";
 import { AdvancedDynamicTexture, Button, Control } from "@babylonjs/gui";
 
 enum State { START = 0, GAME = 1, LOSE = 2, CUTSCENE = 3 };

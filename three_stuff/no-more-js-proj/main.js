@@ -1,6 +1,9 @@
 
-import { Scene, AmbientLight, GridHelper, MathUtils, Mesh, MeshBasicMaterial, MeshStandardMaterial, PerspectiveCamera, PointLight, PointLightHelper, SphereBufferGeometry, TextureLoader, TorusBufferGeometry, WebGLRenderer } from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+//import { Scene, AmbientLight, GridHelper, MathUtils, Mesh, MeshBasicMaterial, MeshStandardMaterial, PerspectiveCamera, PointLight, PointLightHelper, SphereBufferGeometry, TextureLoader, TorusBufferGeometry, WebGLRenderer } from "three";
+//import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { Scene, AmbientLight, GridHelper, MathUtils, Mesh, MeshBasicMaterial, MeshStandardMaterial, PerspectiveCamera, PointLight, PointLightHelper, SphereBufferGeometry, TextureLoader, TorusBufferGeometry, WebGLRenderer } from "https://cdn.skypack.dev/three@0.134.0";
+import { OrbitControls } from "https://cdn.skypack.dev/three@0.134.0/examples/jsm/controls/OrbitControls";
+
 import spaceImage from "./assets/images/spaceImage.jpg";
 import normalTexture from "./assets/images/normal_texture.png";
 import jupiterTexture from "./assets/images/8k_jupiter_texture.jpg";
