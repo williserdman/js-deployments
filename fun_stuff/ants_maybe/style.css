@@ -1,0 +1,10 @@
+#animationScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  outline: none;
+  border: none;
+  background-color: black;
+  width: max-content;
+  height: max-content;
+}
