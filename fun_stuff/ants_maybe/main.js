@@ -20,11 +20,15 @@ window.onload = () => {
     ants.push(new Ant({ x: window.innerWidth / 2, y: window.innerHeight / 2 }));
 
   function animate() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.001)";
     ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
     ants.forEach((ant) => ant.update(ctx));
     requestAnimationFrame(animate);
   }
 
   animate();
+  setInterval(() => {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+    ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+  }, 5000);
 };

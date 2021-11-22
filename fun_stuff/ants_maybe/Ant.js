@@ -3,7 +3,7 @@ export default class Ant {
   ANT_HEIGHT = 4;
   WANDER_AMM = 0.005;
   MAX_SPEED = 2;
-  SLIME = 0.1;
+  SLIME = 1;
 
   constructor(position) {
     this.position = {
@@ -75,38 +75,38 @@ export default class Ant {
   #pixelGrab(ctx, sides) {
     let tempX = this.speed.x;
     let tempY = this.speed.y;
-    let xVal = this.position.x + 2 * tempX;
-    let yVal = this.position.y + 2 * tempY;
+    let xVal = this.position.x + 3 * tempX;
+    let yVal = this.position.y + 3 * tempY;
     const topVal =
       (ctx
         .getImageData(xVal, yVal, sides, sides)
         .data.reduce((a, b) => a + b, 0) -
         255) /
-      (255 * 4);
+      (255 * sides * sides * 4);
     console.log(1);
 
     tempX = Math.cos(this.direction + Math.PI / 2) * this.MAX_SPEED;
     tempY = Math.sin(this.direction + Math.PI / 2) * this.MAX_SPEED;
-    xVal = this.position.x + 2 * tempX;
-    yVal = this.position.y + 2 * tempY;
+    xVal = this.position.x + 3 * tempX;
+    yVal = this.position.y + 3 * tempY;
     const leftVal =
       (ctx
         .getImageData(xVal, yVal, sides, sides)
         .data.reduce((a, b) => a + b, 0) -
         255) /
-      (255 * 4);
-    console.log(2);
+      (255 * sides * sides * 4);
+    console.log(leftVal);
 
     tempX = Math.cos(this.direction - Math.PI / 2) * this.MAX_SPEED;
     tempY = Math.sin(this.direction - Math.PI / 2) * this.MAX_SPEED;
-    xVal = this.position.x + 2 * tempX;
-    yVal = this.position.y + 2 * tempY;
+    xVal = this.position.x + 3 * tempX;
+    yVal = this.position.y + 3 * tempY;
     const rightVal =
       (ctx
         .getImageData(xVal, yVal, sides, sides)
         .data.reduce((a, b) => a + b, 0) -
         255) /
-      (255 * 4);
+      (255 * sides * sides * 4);
 
     return { topVal, leftVal, rightVal };
   }
@@ -116,6 +116,6 @@ export default class Ant {
     const lTilt = (Math.PI / 2) * obj.leftVal;
     const rTilt = -(Math.PI / 2) * obj.rightVal;
 
-    this.direction = this.direction + (rTilt + lTilt) * this.SLIME;
+    this.direction += (lTilt + rTilt) * (1 - obj.topVal) * this.SLIME;
   }
 }
