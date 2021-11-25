@@ -1,5 +1,7 @@
-import * as THREE from "https://cdn.skypack.dev/three";
-import { OrbitControls } from "https://cdn.skypack.dev/three/examples/jsm/controls/OrbitControls";
+import * as THREE from "three";
+import { Vector2, Vector3 } from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import Boid from "./Boid";
 
 const SPEED = 0.05;
 
@@ -81,7 +83,11 @@ const SIDES = [side1, side12, side2, side22, side3, side32];
 // Helpers
 const simBox = new THREE.Mesh(
   new THREE.BoxBufferGeometry(10, 10, 10),
-  new THREE.MeshBasicMaterial({ wireframe: true })
+  new THREE.MeshBasicMaterial({
+    color: 0xaa0000,
+    wireframe: false,
+    side: THREE.DoubleSide
+  })
 );
 const boxHelper = new THREE.BoxHelper(simBox); // added planes above because it takes place insite this box, so ray casting doens't work
 const axesHelper = new THREE.AxesHelper(7); // red is x, green is y, so blue is z
@@ -89,16 +95,6 @@ const gridHelper = new THREE.GridHelper(10, 20);
 scene.add(axesHelper, gridHelper, boxHelper);
 
 /****** End THREE Setup ******/
-
-function threeBoid(posX, posY, posZ) {
-  const boid = new THREE.Mesh(
-    new THREE.CylinderBufferGeometry(0, 0.1, 0.3), // this should be a cone coming to a point at the top
-    new THREE.MeshStandardMaterial({ color: 0x00aa00 })
-  );
-  boid.position.set(posX, posY, posZ);
-  scene.add(boid);
-  return boid;
-}
 
 function createBoids(boidNum) {
   let boidList = [];
@@ -116,56 +112,8 @@ function createBoids(boidNum) {
   return boidList;
 }
 
-function getDistance(boid1, boid2) {
-  return Math.sqrt(
-    (boid2.position.x - boid1.position.x) ** 2 +
-      (boid2.position.y - boid1.position.y) ** 2 +
-      (boid2.position.z - boid1.position.z) ** 2
-  );
-}
-
-function updateBoid(boid) {
-  boid.translateY(SPEED);
-}
-
 let temp;
 let aHelper;
-function getDirVec(boid) {
-  testBoid.getWorldDirection(vec);
-  //this is the Z axis' movement forward
-  //i want to move the y axis forward
-
-  scene.remove(aHelper);
-  aHelper = new THREE.ArrowHelper(vec, boid.position, 3);
-  scene.add(aHelper);
-
-  return vec;
-}
-
-//rayCaster.far = 100;
-let ghostScene;
-function distanceToObstacle(boid) {
-  ghostScene = scene;
-  SIDES.forEach((a) => ghostScene.add(a));
-  ghostScene.updateMatrixWorld(true);
-  let rayCaster = new THREE.Raycaster(boid.position, getDirVec(boid), 0, 33);
-  const dafda = rayCaster.intersectObjects(SIDES);
-  try {
-    return console.log(dafda[0].distance);
-  } catch {
-    return 0;
-  }
-}
-
-function avoidWalls(boid) {
-  if (distanceToObstacle(boid) <= 1) {
-    boid.rotation.x += Math.random() * 2 * Math.PI - Math.PI;
-    boid.rotation.y += Math.random() * 2 * Math.PI - Math.PI;
-    boid.rotation.z += Math.random() * 2 * Math.PI - Math.PI;
-    console.log("fired");
-  }
-  console.log("called");
-}
 
 function boidWander(boid) {
   const WANDER_AMMOUNT = 0.05;
@@ -174,14 +122,10 @@ function boidWander(boid) {
   boid.rotation.z += (Math.random() * 2 * Math.PI - Math.PI) * WANDER_AMMOUNT;
 }
 
-const testBoid = new threeBoid(-3, -6, 0);
-testBoid.rotation.x = 1;
+const testBoid = new Boid(scene, simBox);
 
-let vec = new THREE.Vector3(0, 0, 0);
 function animate() {
-  avoidWalls(testBoid);
-  updateBoid(testBoid);
-  SIDES.forEach((a) => scene.remove(a));
+  testBoid.update();
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
 }
