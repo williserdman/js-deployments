@@ -15,6 +15,7 @@ export default class Boid {
     this.velocity = new THREE.Vector3(0.05, 0.05, 0.05);
     this.acceleration = new THREE.Vector3(0, 0, 0);
     this.simBox = simBox;
+    this.mass = 0.001;
 
     // Creating three.js item
     this.threeBoid = new THREE.Mesh(sphereGeometry, sphereMaterial);
@@ -36,9 +37,10 @@ export default class Boid {
   update() {
     this.#avoidWalls();
 
+    this.acceleration.multiplyScalar(this.mass);
     this.velocity.add(this.acceleration);
+    this.velocity.clampLength(0, 0.3);
     this.threeBoid.position.add(this.velocity);
-    console.log(this.velocity);
     this.acceleration.set(0, 0, 0);
   }
   getDirectionVector() {
@@ -46,19 +48,27 @@ export default class Boid {
     return directionVector.normalize();
   }
   #avoidWalls() {
-    rayCaster.set(this.threeBoid.position, this.getDirectionVector());
+    const SIZE = 4;
+    const TURNFACTOR = 1;
+    /* rayCaster.set(this.threeBoid.position, this.getDirectionVector());
     try {
       const distanceToBorder = rayCaster
         .intersectObject(this.simBox)
         .shift().distance;
       if (distanceToBorder <= 1) {
-        this.velocity.multiplyScalar(-1);
+        this.velocity.multiplyScalar(-1); //PROBABLY BETTER JUST TO CHECK EACH INDIVIDUALLY AND ADJUST EACH INDIVIDUALLY
       }
     } catch (e) {
       this.velocity.multiplyScalar(-1);
       console.log(rayCaster.intersectObject(this.simBox));
       console.log(this.threeBoid.position);
       console.error(e);
-    }
+    } */
+    if (this.threeBoid.position.x >= SIZE) this.acceleration.x -= TURNFACTOR;
+    if (this.threeBoid.position.x <= -SIZE) this.acceleration.x += TURNFACTOR;
+    if (this.threeBoid.position.y >= SIZE) this.acceleration.y -= TURNFACTOR;
+    if (this.threeBoid.position.y <= -SIZE) this.acceleration.y += TURNFACTOR;
+    if (this.threeBoid.position.z >= SIZE) this.acceleration.z -= TURNFACTOR;
+    if (this.threeBoid.position.z <= -SIZE) this.acceleration.z += TURNFACTOR;
   }
 }
