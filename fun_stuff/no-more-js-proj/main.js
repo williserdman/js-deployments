@@ -1,7 +1,21 @@
-
 //import { Scene, AmbientLight, GridHelper, MathUtils, Mesh, MeshBasicMaterial, MeshStandardMaterial, PerspectiveCamera, PointLight, PointLightHelper, SphereBufferGeometry, TextureLoader, TorusBufferGeometry, WebGLRenderer } from "three";
 //import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-import { Scene, AmbientLight, GridHelper, MathUtils, Mesh, MeshBasicMaterial, MeshStandardMaterial, PerspectiveCamera, PointLight, PointLightHelper, SphereBufferGeometry, TextureLoader, TorusBufferGeometry, WebGLRenderer } from "https://cdn.skypack.dev/three";
+import {
+  Scene,
+  AmbientLight,
+  GridHelper,
+  MathUtils,
+  Mesh,
+  MeshBasicMaterial,
+  MeshStandardMaterial,
+  PerspectiveCamera,
+  PointLight,
+  PointLightHelper,
+  SphereBufferGeometry,
+  TextureLoader,
+  TorusBufferGeometry,
+  WebGLRenderer
+} from "https://cdn.skypack.dev/three";
 import { OrbitControls } from "https://cdn.skypack.dev/three/examples/jsm/controls/OrbitControls";
 
 import spaceImage from "./assets/images/spaceImage.jpg";
@@ -10,18 +24,23 @@ import jupiterTexture from "./assets/images/8k_jupiter_texture.jpg";
 
 function main() {
   const scene = new Scene();
-  const camera = new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  const camera = new PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+  );
 
   const renderer = new WebGLRenderer({
-      canvas: document.getElementById("bg")
+    canvas: document.getElementById("bg")
   });
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   camera.position.z = document.body.getBoundingClientRect().top * -0.01 + 30;
 
   const torus = new Mesh(
-      new TorusBufferGeometry(10, 3, 16, 100),
-      new MeshStandardMaterial({ color: 0xff6347, wireframe: false})
+    new TorusBufferGeometry(10, 3, 16, 100),
+    new MeshStandardMaterial({ color: 0xff6347, wireframe: false })
   );
   scene.add(torus);
 
@@ -43,7 +62,7 @@ function main() {
   Array(400).fill().forEach(createStar);
 
   // Loading bg image/texture
-  const loader = new TextureLoader()
+  const loader = new TextureLoader();
   const bgTexture = loader.load(spaceImage);
   scene.background = bgTexture;
 
@@ -52,7 +71,6 @@ function main() {
     new MeshStandardMaterial({
       map: loader.load(jupiterTexture),
       normalMap: loader.load(normalTexture)
-
     })
   );
   jupiter.scale.set(10, 10, 10);
@@ -88,7 +106,9 @@ function main() {
       new MeshBasicMaterial({ color: 0xffffff })
     );
 
-    const [x, y, z] = Array(3).fill().map(() => MathUtils.randFloatSpread(200));
+    const [x, y, z] = Array(3)
+      .fill()
+      .map(() => MathUtils.randFloatSpread(200));
     star.position.set(x, y, z);
     scene.add(star);
   }
