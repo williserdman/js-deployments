@@ -17,10 +17,7 @@ const BOXHEIGHT = 1;
 let stack: any[] = [];
 let overhangs: any[] = [];
 
-let lastTime: number;
-
 function init() {
-  lastTime = 0;
   gameRunning = false;
   stack = [];
   overhangs = [];
@@ -28,7 +25,7 @@ function init() {
 
   // Cannon Stuff
   world = new CANNON.World();
-  world.gravity.set(0, -0.0002, 0);
+  world.gravity.set(0, -10, 0);
   world.broadphase = new CANNON.NaiveBroadphase();
   world.solver.iterations = 40;
 
@@ -80,6 +77,7 @@ function addLayer(
   stack.push(layer);
 }
 
+let lastTime: number;
 function generateBox(
   x: number,
   y: number,
@@ -112,20 +110,21 @@ function generateBox(
   return { threejs: mesh, cannonjs: body, width, depth };
 }
 
-function animate(time: any) {
-  const speed = 0.15;
+function animate() {
+  if (gameRunning) {
+    const speed = 0.15;
 
-  const topLayer: any = stack[stack.length - 1];
-  topLayer.threejs.position[topLayer.axis] += speed;
-  topLayer.cannonjs.position[topLayer.axis] += speed;
+    const topLayer: any = stack[stack.length - 1];
+    topLayer.threejs.position[topLayer.axis] += speed;
+    topLayer.cannonjs.position[topLayer.axis] += speed;
 
-  if (camera.position.y < BOXHEIGHT * (stack.length - 2) + 4) {
-    camera.position.y += speed;
+    if (camera.position.y < BOXHEIGHT * (stack.length - 2) + 4) {
+      camera.position.y += speed;
+    }
+
+    updatePhysics(1 / 60); // this takes in a fraction NOT MILISECONDS
+    renderer.render(scene, camera);
   }
-  const timeDelta = time - lastTime;
-  updatePhysics(timeDelta);
-  renderer.render(scene, camera);
-  lastTime = time;
 }
 
 function updatePhysics(timeDelta: number) {
@@ -221,7 +220,8 @@ window.addEventListener("keydown", (e) => {
 
 function restartGame() {
   renderer.setAnimationLoop(null);
-  setTimeout(init, 1000);
+  init();
+  gameRunning = false;
 }
 
 init();
