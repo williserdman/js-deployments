@@ -1,10 +1,11 @@
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+#score {
+  position: absolute;
+  color: white;
+  font-size: 3em;
+  font-weight: bold;
+  top: 30px;
+  right: 30px;
+  z-index: 1;
 }
 canvas {
   position: fixed;
@@ -12,4 +13,12 @@ canvas {
   top: 0;
   outline: none;
   border: none;
+}
+#reset {
+  position: absolute;
+  color: black;
+  font-size: medium;
+  bottom: 30px;
+  right: 30px;
+  z-index: 1;
 }
