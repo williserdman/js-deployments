@@ -91,7 +91,7 @@ function generateBox(
   const color = !falls
     ? new THREE.Color(`hsl(${30 + stack.length * 4}, 100%, 50%)`)
     : new THREE.Color(`hsl(${30 + (stack.length - 1) * 4}, 100%, 50%)`);
-  const material = new THREE.MeshLambertMaterial({ color });
+  const material = new THREE.MeshLambertMaterial({ color, wireframe: false });
   const mesh = new THREE.Mesh(geometry, material);
   mesh.position.set(x, y, z);
   scene.add(mesh);
@@ -131,7 +131,9 @@ function updatePhysics(timeDelta: number) {
   world.step(timeDelta);
 
   overhangs.forEach((overhang) => {
+    console.log(overhang.threejs.position);
     overhang.threejs.position.copy(overhang.cannonjs.position);
+    console.log(overhang.threejs.position, overhang.cannonjs.position);
     overhang.threejs.quaternion.copy(overhang.cannonjs.quaternion);
   });
 }
