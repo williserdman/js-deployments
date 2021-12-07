@@ -5,19 +5,17 @@ import Stats from "three/examples/jsm/libs/stats.module";
 import { PointerLockControlsCannon } from "cannon-es/examples/js/PointerLockControlsCannon";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-//https://github.com/pmndrs/cannon-es/blob/master/examples/threejs_fps.html
-
 // threejs things
 let scene, camera, renderer, stats, material;
 
 // cannonjs stuff
-let world, controls;
+let world, contrls;
 const timeStep = 1 / 60; // in seconds not millisenconds
 let lastCallTime = performance.now();
 let sphereShape, sphereBody, physicsMaterial;
-const ballBodies = [];
+const balls = [];
 const ballMeshes = [];
-const boxBodies = [];
+const boxes = [];
 const boxMeshes = [];
 
 function threeInit() {
@@ -48,10 +46,10 @@ function threeInit() {
   spotlight.castShadow = true;
   spotlight.shadow.camera.near = 10;
   spotlight.shadow.camera.far = 100;
-  spotlight.shadow.camera.far = 30;
+  spotlight.shadow.camera.fov = 30;
   spotlight.shadow.mapSize.width = 2048;
   spotlight.shadow.mapSize.height = 2048;
-  scene.add(ambientLight, spotlight);
+  scene.add(spotlight);
 
   material = new THREE.MeshLambertMaterial({
     color: 0xdddddd,
@@ -98,7 +96,7 @@ function cannonInit() {
 
   world.addContactMaterial(contactMaterial);
 
-  sphereShape = new CANNON.Sphere(1.3); // 1 is the radius
+  sphereShape = new CANNON.Sphere(1); // 1 is the radius
   sphereBody = new CANNON.Body({
     mass: 5,
     material: physicsMaterial,
@@ -117,131 +115,14 @@ function cannonInit() {
   });
   groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
   world.addBody(groundBody);
-
-  createBoxes();
 }
 
-const shootVelocity = 15;
-const ballShape = new CANNON.Sphere(0.2);
-const ballGeometry = new THREE.SphereBufferGeometry(ballShape.radius, 32, 32);
-
-function getShootDirection() {
-  const vector = new THREE.Vector3(0, 0, 1);
-  vector.unproject(camera);
-  const ray = new THREE.Ray(
-    sphereBody.position,
-    vector.sub(sphereBody.position).normalize()
-  );
-  return ray.direction;
-}
-
-window.addEventListener("click", (e) => {
-  if (!controls.enabled) {
-    controls.lock();
-    controls.enabled = true;
-    return;
-  }
-
-  const ballBody = new CANNON.Body({ mass: 1, shape: ballShape });
-  const ballMesh = new THREE.Mesh(ballGeometry, material);
-
-  ballMesh.castShadow = true;
-  ballMesh.receiveShadow = true;
-
-  world.addBody(ballBody);
-  scene.add(ballMesh);
-  ballBodies.push(ballBody);
-  ballMeshes.push(ballMesh);
-
-  const shootDirection = getShootDirection();
-  ballBody.velocity.set(
-    shootDirection.x * shootVelocity,
-    shootDirection.y * shootVelocity,
-    shootDirection.z * shootVelocity
-  );
-
-  const x =
-    sphereBody.position.x +
-    shootDirection.x * (sphereShape.radius * 1.02 + ballShape.radius);
-  const y =
-    sphereBody.position.y +
-    shootDirection.y * (sphereShape.radius * 1.02 + ballShape.radius);
-  const z =
-    sphereBody.position.z +
-    shootDirection.z * (sphereShape.radius * 1.02 + ballShape.radius);
-  ballBody.position.set(x, y, z);
-  ballMesh.position.copy(ballBody.position);
-});
-
-function initPointerLock() {
-  controls = new PointerLockControlsCannon(camera, sphereBody);
-  scene.add(controls.getObject());
-}
-
-function createBoxes() {
-  const cannonBox = new CANNON.Vec3(1, 1, 1);
-  const boxShape = new CANNON.Box(cannonBox);
-  //const boxGeometry = new THREE.BoxBufferGeometry(cannonBox.scale(2));
-  const boxGeometry = new THREE.BoxBufferGeometry(
-    cannonBox.x * 2,
-    cannonBox.y * 2,
-    cannonBox.z * 2
-  );
-
-  for (let i = 0; i < 7; i++) {
-    const boxBody = new CANNON.Body({ mass: 5, shape: boxShape });
-    const boxMesh = new THREE.Mesh(boxGeometry, material);
-    boxMesh.castShadow = true;
-    boxMesh.receiveShadow = true;
-
-    const x = (Math.random() - 0.5) * 20;
-    const y = (Math.random() - 0.5) * 1 + 1;
-    const z = (Math.random() - 0.5) * 20;
-
-    boxBody.position.set(x, y, z);
-    boxMesh.position.copy(boxBody.position);
-
-    world.addBody(boxBody);
-    scene.add(boxMesh);
-    boxBodies.push(boxBody);
-    boxMeshes.push(boxMesh);
-  }
-}
-
-function createLinkedBoxes() {
-  const size = 0.5; // side lengths i assume
-  const mass = 0.3;
-  const space = 0.1 * size; // gap
-}
-
-threeInit(); // scene is made here and used in both
 cannonInit();
-initPointerLock();
-//controls = new OrbitControls(camera, renderer.domElement);
-//camera.position.y = 5;
-//renderer.setAnimationLoop(animate);
+threeInit();
+
+const controls = new OrbitControls(camera, renderer.domElement);
+renderer.setAnimationLoop(animate);
 
 function animate() {
-  requestAnimationFrame(animate);
-  const time = performance.now() / 1000;
-  const dt = time - lastCallTime;
-  lastCallTime = time;
-
-  if (controls.enabled) {
-    world.step(timeStep, dt);
-
-    for (let i = 0; i < ballBodies.length; i++) {
-      ballMeshes[i].position.copy(ballBodies[i].position);
-      ballMeshes[i].quaternion.copy(ballBodies[i].quaternion);
-    }
-    for (let i = 0; i < boxBodies.length; i++) {
-      boxMeshes[i].position.copy(boxBodies[i].position);
-      boxMeshes[i].quaternion.copy(boxBodies[i].quaternion);
-    }
-  }
-  controls.update(dt);
   renderer.render(scene, camera);
-  stats.update();
 }
-
-animate();
