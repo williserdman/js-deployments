@@ -46,7 +46,7 @@ function threeInit() {
   // lights
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
   const spotlight = new THREE.SpotLight(0xffffff, 0.9, 0, Math.PI / 4, 1);
-  spotlight.shadow.bias = -0.0006;
+  spotlight.shadow.bias = -0.002;
   spotlight.position.set(10, 30, 20);
   spotlight.target.position.set(0, 0, 0);
   spotlight.castShadow = true;
@@ -243,9 +243,11 @@ const loaderPromise = loader.loadAsync(
   }
 );
 
-await loaderPromise
+loaderPromise
   .then((gltf) => {
-    sceneGLTF = gltf;
+    sceneGLTF = gltf.scene;
+    sceneGLTF.position.set(0, 1, 0);
+    scene.add(sceneGLTF);
   })
   .catch((e) => console.log(e));
 
@@ -253,9 +255,7 @@ threeInit(); // scene is made here and used in both
 cannonInit();
 initPointerLock();
 
-//controls = new OrbitControls(camera, renderer.domElement);
-//camera.position.y = 5;
-//renderer.setAnimationLoop(animate);
+// cannon js doesn't hace ccd which means tunneling is ok
 
 function animate() {
   requestAnimationFrame(animate);

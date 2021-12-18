@@ -7,7 +7,9 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "ammo.js": "^0.0.10",
     "cannon-es": "^0.18.0",
+    "physijs": "^1.0.4",
     "three": "^0.135.0",
     "vite": "^2.6.14"
   }
