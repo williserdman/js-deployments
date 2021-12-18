@@ -77,7 +77,6 @@ function addLayer(
   stack.push(layer);
 }
 
-let lastTime: number;
 function generateBox(
   x: number,
   y: number,
