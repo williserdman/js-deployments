@@ -1,0 +1,9 @@
+#renderScreen {
+  position: fixed;
+  left: 0;
+  top: 0;
+  border: none;
+  outline: none;
+  width: 50%;
+  height: 50%;
+}
