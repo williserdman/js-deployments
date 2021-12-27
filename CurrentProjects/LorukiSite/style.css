@@ -1,4 +1,6 @@
 /* lato font from google */
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap");
+
 :root {
   --primary-color: #047aed;
   --secondary-color: #1c3fa8;
@@ -383,7 +385,7 @@ img {
 .languages .card {
   text-align: center;
   margin: 18px 10px 40px;
-  transition: transform 0.2 ease-in;
+  transition: transform 0.2s ease-in;
 }
 
 .languages .card h4 {
