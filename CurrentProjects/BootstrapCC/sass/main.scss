@@ -1,0 +1,11 @@
+@use "sass:map";
+
+$primary: #c29938;
+$light: #fbf5e5;
+
+$theme-colors: (
+  "altlight": #f2ebfa,
+  "altdark": #522192
+);
+
+@import "../node_modules/bootstrap/scss/bootstrap";
