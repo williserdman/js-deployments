@@ -9,3 +9,4 @@ quick links:
 [tapping game](https://silly-torvalds-4e6a47.netlify.app/)  
 [fps physics thing](https://pensive-haibt-0aa6d5.netlify.app/)  
 [svelte kit first project](https://musing-clarke-43c9a6.netlify.app/)
+["chat" app with react and firebase](https://goofy-khorana-0fd1fa.netlify.app/)
