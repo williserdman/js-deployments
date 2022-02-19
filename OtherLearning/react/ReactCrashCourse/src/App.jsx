@@ -18,7 +18,7 @@ function App() {
   }, []);
 
   async function fetchTasks() {
-    const res = await fetch("http://localhost:8000/tasks");
+    const res = await fetch("http://localhost:8000/tasks"); //change for static ip
     const data = await res.json();
 
     return data;
