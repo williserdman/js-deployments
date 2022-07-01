@@ -14,5 +14,8 @@
 		"@sveltejs/kit": "next",
 		"svelte": "^3.44.0"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"llhttp": "^1.0.1"
+	}
 }
