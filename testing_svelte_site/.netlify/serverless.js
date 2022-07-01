@@ -1,31 +1,32 @@
-'use strict';
+"use strict";
 
-Object.defineProperty(exports, '__esModule', { value: true });
+Object.defineProperty(exports, "__esModule", { value: true });
 
-require('./shims.js');
-var _0SERVER = require('./server/index.js');
-require('assert');
-require('net');
-require('http');
-require('stream');
-require('buffer');
-require('util');
-require('stream/web');
-require('perf_hooks');
-require('util/types');
-require('events');
-require('tls');
-require('async_hooks');
-require('console');
-require('zlib');
-require('crypto');
+require("./shims.js");
+var _0SERVER = require("./server/index.js");
+require("assert");
+require("net");
+require("http");
+require("stream");
+require("buffer");
+require("util");
+require("stream/web");
+require("perf_hooks");
+require("util/types");
+require("events");
+require("tls");
+require("async_hooks");
+require("console");
+require("zlib");
+require("crypto");
+require("llhttp");
 
-var setCookie = {exports: {}};
+var setCookie = { exports: {} };
 
 var defaultParseOptions = {
   decodeValues: true,
   map: false,
-  silent: false,
+  silent: false
 };
 
 function isNonEmptyString(str) {
@@ -55,7 +56,7 @@ function parseString(setCookieValue, options) {
 
   var cookie = {
     name: name, // grab everything before the first =
-    value: value,
+    value: value
   };
 
   parts.forEach(function (part) {
@@ -221,7 +222,8 @@ function splitCookiesString(cookiesString) {
 setCookie.exports = parse;
 setCookie.exports.parse = parse;
 setCookie.exports.parseString = parseString;
-var splitCookiesString_1 = setCookie.exports.splitCookiesString = splitCookiesString;
+var splitCookiesString_1 = (setCookie.exports.splitCookiesString =
+  splitCookiesString);
 
 /**
  * Splits headers into two categories: single value and multi value
@@ -232,24 +234,24 @@ var splitCookiesString_1 = setCookie.exports.splitCookiesString = splitCookiesSt
  * }}
  */
 function split_headers(headers) {
-	/** @type {Record<string, string>} */
-	const h = {};
+  /** @type {Record<string, string>} */
+  const h = {};
 
-	/** @type {Record<string, string[]>} */
-	const m = {};
+  /** @type {Record<string, string[]>} */
+  const m = {};
 
-	headers.forEach((value, key) => {
-		if (key === 'set-cookie') {
-			m[key] = splitCookiesString_1(value);
-		} else {
-			h[key] = value;
-		}
-	});
+  headers.forEach((value, key) => {
+    if (key === "set-cookie") {
+      m[key] = splitCookiesString_1(value);
+    } else {
+      h[key] = value;
+    }
+  });
 
-	return {
-		headers: h,
-		multiValueHeaders: m
-	};
+  return {
+    headers: h,
+    multiValueHeaders: m
+  };
 }
 
 /**
@@ -257,37 +259,37 @@ function split_headers(headers) {
  * @returns {import('@netlify/functions').Handler}
  */
 function init(manifest) {
-	const server = new _0SERVER.Server(manifest);
+  const server = new _0SERVER.Server(manifest);
 
-	return async (event, context) => {
-		const response = await server.respond(to_request(event), {
-			platform: { context },
-			getClientAddress() {
-				return event.headers['x-nf-client-connection-ip'];
-			}
-		});
+  return async (event, context) => {
+    const response = await server.respond(to_request(event), {
+      platform: { context },
+      getClientAddress() {
+        return event.headers["x-nf-client-connection-ip"];
+      }
+    });
 
-		const partial_response = {
-			statusCode: response.status,
-			...split_headers(response.headers)
-		};
+    const partial_response = {
+      statusCode: response.status,
+      ...split_headers(response.headers)
+    };
 
-		if (!is_text(response.headers.get('content-type'))) {
-			// Function responses should be strings (or undefined), and responses with binary
-			// content should be base64 encoded and set isBase64Encoded to true.
-			// https://github.com/netlify/functions/blob/main/src/function/response.ts
-			return {
-				...partial_response,
-				isBase64Encoded: true,
-				body: Buffer.from(await response.arrayBuffer()).toString('base64')
-			};
-		}
+    if (!is_text(response.headers.get("content-type"))) {
+      // Function responses should be strings (or undefined), and responses with binary
+      // content should be base64 encoded and set isBase64Encoded to true.
+      // https://github.com/netlify/functions/blob/main/src/function/response.ts
+      return {
+        ...partial_response,
+        isBase64Encoded: true,
+        body: Buffer.from(await response.arrayBuffer()).toString("base64")
+      };
+    }
 
-		return {
-			...partial_response,
-			body: await response.text()
-		};
-	};
+    return {
+      ...partial_response,
+      body: await response.text()
+    };
+  };
 }
 
 /**
@@ -295,27 +297,27 @@ function init(manifest) {
  * @returns {Request}
  */
 function to_request(event) {
-	const { httpMethod, headers, rawUrl, body, isBase64Encoded } = event;
+  const { httpMethod, headers, rawUrl, body, isBase64Encoded } = event;
 
-	/** @type {RequestInit} */
-	const init = {
-		method: httpMethod,
-		headers: new Headers(headers)
-	};
+  /** @type {RequestInit} */
+  const init = {
+    method: httpMethod,
+    headers: new Headers(headers)
+  };
 
-	if (httpMethod !== 'GET' && httpMethod !== 'HEAD') {
-		const encoding = isBase64Encoded ? 'base64' : 'utf-8';
-		init.body = typeof body === 'string' ? Buffer.from(body, encoding) : body;
-	}
+  if (httpMethod !== "GET" && httpMethod !== "HEAD") {
+    const encoding = isBase64Encoded ? "base64" : "utf-8";
+    init.body = typeof body === "string" ? Buffer.from(body, encoding) : body;
+  }
 
-	return new Request(rawUrl, init);
+  return new Request(rawUrl, init);
 }
 
 const text_types = new Set([
-	'application/xml',
-	'application/json',
-	'application/x-www-form-urlencoded',
-	'multipart/form-data'
+  "application/xml",
+  "application/json",
+  "application/x-www-form-urlencoded",
+  "multipart/form-data"
 ]);
 
 /**
@@ -325,10 +327,12 @@ const text_types = new Set([
  * @returns {boolean}
  */
 function is_text(content_type) {
-	if (!content_type) return true; // defaults to json
-	const type = content_type.split(';')[0].toLowerCase(); // get the mime type
+  if (!content_type) return true; // defaults to json
+  const type = content_type.split(";")[0].toLowerCase(); // get the mime type
 
-	return type.startsWith('text/') || type.endsWith('+xml') || text_types.has(type);
+  return (
+    type.startsWith("text/") || type.endsWith("+xml") || text_types.has(type)
+  );
 }
 
 exports.init = init;
