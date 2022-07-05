@@ -1,4 +1,0 @@
-{
-  "type": "commonjs",
-  "dependencies": {"llhttp": "^1.0.1"}
-}
