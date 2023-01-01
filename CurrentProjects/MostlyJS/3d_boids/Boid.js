@@ -1,4 +1,4 @@
-import * as THREE from "https://cdn.skypack.dev/three";
+import * as THREE from "https://cdn.skypack.dev/three@0.132.2";
 
 const sphereGeometry = new THREE.SphereBufferGeometry(0.5);
 const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0x00aa00 });
