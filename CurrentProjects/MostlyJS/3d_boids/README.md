@@ -1,4 +1,4 @@
-# Demo
+# Results / End Product
 See code above, [link to results](https://amazing-douhua-119f06.netlify.app/). My implementation of Craig Reynold's artificial life simulation. I created a 3d version using his original 3 rules:
 - Seperation
 - Alignmen
