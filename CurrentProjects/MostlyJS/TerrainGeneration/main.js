@@ -64,7 +64,7 @@ function makeBump() {
       1 -
       Math.min(Math.max(distance / plane.geometry.parameters.width, 0.0), 1.0);
     vertex.y = height;
-    plane.geometry.attributes.position. //heres
+    //plane.geometry.attributes.position. //heres
   }
 }
 
