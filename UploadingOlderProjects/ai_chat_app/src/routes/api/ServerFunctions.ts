@@ -56,6 +56,7 @@ export const getClientInfo = async (userID: string) => {
 	return (await (await get(ref(db, "users/" + userID + "/clientInfo"))).val()) ?? "";
 };
 
+// While I don't have the API running alongside this server, these are real responses and are being used for testing.
 let counter = 0;
 export const mockAI = (question: string): string => {
 	let rtrn: string;
