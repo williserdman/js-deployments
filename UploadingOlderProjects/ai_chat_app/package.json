@@ -28,6 +28,7 @@
 	"type": "module",
 	"dependencies": {
 		"@supabase/supabase-js": "^2.2.3",
+		"axios": "^1.2.3",
 		"firebase": "^9.15.0"
 	}
 }
